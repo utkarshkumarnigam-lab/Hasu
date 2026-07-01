@@ -9,8 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let userName = null;
 
     // ─── AI Response Engine ───────────────────────────────────────────
-    const API_KEY = 'YOUR_API_KEY_HERE'; // Replace with your Google Gemini API key
-    const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`;
+    const API_URL = '/api/chat';
 
     async function generateHumanReply() {
         const contents = messageHistory.map(m => ({
