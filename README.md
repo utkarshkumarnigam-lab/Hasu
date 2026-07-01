@@ -29,10 +29,14 @@ Hasu is a beautiful, locally-hosted, human-like chat interface that leverages th
    ```
 
 3. **Start the server**:
+   You can start the server and automatically open the chat box by running the included batch script (Windows):
+   ```bash
+   launch.bat
+   ```
+   Or manually via Node:
    ```bash
    npm start
    ```
-   Or you can simply run the provided `Launch Hasu Chat.bat` file if you are on Windows.
 
 4. **Open in Browser**:
    The server will start and automatically redirect you to the secure HTTPS connection:
