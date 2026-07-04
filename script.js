@@ -25,8 +25,9 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentChatId   = null;
 
     // ─── API Settings State & Handlers ────────────────────────────────────────
-    let customGeminiKey = localStorage.getItem('hasu_custom_api_key') || '';
     const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    let customGeminiKey = localStorage.getItem('hasu_custom_api_key') || '';
+    // On remote hosts, always use direct API with user-provided key
     let useCustomKey = localStorage.getItem('hasu_use_custom_key') !== null
         ? localStorage.getItem('hasu_use_custom_key') === 'true'
         : !isLocalhost;
@@ -42,17 +43,17 @@ document.addEventListener('DOMContentLoaded', () => {
             statusDot.className = 'status-dot';
             statusDot.style.background = '#10b981';
             statusDot.style.boxShadow = '0 0 8px rgba(16,185,129,0.6)';
-            statusText.textContent = 'Direct API';
+            statusText.textContent = 'API Key Set';
             modelStatusDot.style.background = '#10b981';
             modelStatusDot.style.boxShadow = '0 0 8px rgba(16,185,129,0.6)';
-            modelBadgeText.textContent = 'Gemini (Direct)';
-        } else if (useCustomKey && !customGeminiKey) {
+            modelBadgeText.textContent = 'Gemini 2.5 Flash';
+        } else if (!isLocalhost) {
             statusDot.className = 'status-dot';
             statusDot.style.background = '#f59e0b';
             statusDot.style.boxShadow = '0 0 8px rgba(245,158,11,0.6)';
-            statusText.textContent = 'Key Required';
-            modelStatusDot.style.background = '#ef4444';
-            modelStatusDot.style.boxShadow = '0 0 8px rgba(239,68,68,0.6)';
+            statusText.textContent = 'Key Needed';
+            modelStatusDot.style.background = '#f59e0b';
+            modelStatusDot.style.boxShadow = '0 0 8px rgba(245,158,11,0.6)';
             modelBadgeText.textContent = 'Set API Key';
         } else {
             statusDot.className = 'status-dot';
@@ -61,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
             statusText.textContent = 'Local Node';
             modelStatusDot.style.background = '#10b981';
             modelStatusDot.style.boxShadow = '0 0 8px rgba(16,185,129,0.6)';
-            modelBadgeText.textContent = 'Gemini (Local)';
+            modelBadgeText.textContent = 'Gemini 2.5 Flash';
         }
     }
 
@@ -230,10 +231,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // ─── Backend Proxy API ────────────────────────────────────────────────────
 
     async function generateReply() {
-        if (useCustomKey && !customGeminiKey) {
-            setTimeout(() => openApiModal(), 800);
-            return "⚠️ Please configure your Gemini API Key in the API Settings (bottom-left) to chat! Direct API mode is active.";
-        }
+        // Resolve which key to use: user-provided key > backend proxy
+        const resolvedKey = useCustomKey ? customGeminiKey : null;
 
         const contents = messageHistory.map(m => ({
             role: m.role === 'bot' ? 'model' : 'user',
@@ -247,8 +246,8 @@ document.addEventListener('DOMContentLoaded', () => {
             let headers = { 'Content-Type': 'application/json' };
             let bodyData = { systemInstruction, contents, generationConfig: { temperature: 0.7 } };
 
-            if (useCustomKey) {
-                fetchUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${customGeminiKey}`;
+            if (resolvedKey) {
+                fetchUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${resolvedKey}`;
             }
 
             const response = await fetch(fetchUrl, {
@@ -416,8 +415,8 @@ document.addEventListener('DOMContentLoaded', () => {
     startNewChat();       // start fresh session (sidebar will show saved history)
     initApiSettings();    // initialize API key and checkbox from storage
 
-    // Auto-prompt setup if on remote demo host with no key configured yet
+    // Auto-prompt: on remote host with no key yet, open the API settings modal
     if (!isLocalhost && !customGeminiKey) {
-        setTimeout(() => openApiModal(), 1000);
+        setTimeout(() => openApiModal(), 1200);
     }
 });
