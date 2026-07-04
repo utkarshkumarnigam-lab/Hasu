@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const newChatBtn      = document.getElementById('new-chat-btn');
     const sidebarToggle   = document.getElementById('sidebar-toggle');
     const sidebar         = document.getElementById('sidebar');
+    const sidebarBackdrop = document.getElementById('sidebar-backdrop');
 
     // API Settings Modal Selectors
     const apiSettingsBtn    = document.getElementById('api-settings-btn');
@@ -23,6 +24,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let messageHistory  = [];
     let currentChatId   = null;
+
+    // ─── Sidebar Helpers (desktop + mobile drawer) ────────────────────────────
+    function isMobileView() { return window.innerWidth <= 768; }
+
+    function openSidebar() {
+        sidebar.classList.remove('collapsed');
+        if (isMobileView()) sidebarBackdrop.classList.add('active');
+    }
+
+    function closeSidebar() {
+        sidebar.classList.add('collapsed');
+        sidebarBackdrop.classList.remove('active');
+    }
 
     // ─── API Settings State & Handlers ────────────────────────────────────────
     const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
@@ -168,6 +182,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         renderSidebarHistory();
         scrollToBottom();
+        // On mobile, close the sidebar drawer after selecting a chat
+        if (isMobileView()) closeSidebar();
     }
 
     /** Render the sidebar history list */
@@ -407,7 +423,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     newChatBtn.addEventListener('click', () => startNewChat());
 
-    sidebarToggle.addEventListener('click', () => sidebar.classList.toggle('collapsed'));
+    sidebarToggle.addEventListener('click', () => {
+        sidebar.classList.contains('collapsed') ? openSidebar() : closeSidebar();
+    });
+    sidebarBackdrop.addEventListener('click', () => closeSidebar());
 
     // Modal listeners
     apiSettingsBtn.addEventListener('click', () => openApiModal());
@@ -425,6 +444,9 @@ document.addEventListener('DOMContentLoaded', () => {
     pruneOldChats();        // clean up expired chats on load
     restoreOrStartChat();   // restore last chat or start fresh
     initApiSettings();      // initialize API key and checkbox from storage
+
+    // Collapse sidebar by default on mobile
+    if (isMobileView()) sidebar.classList.add('collapsed');
 
     // Auto-prompt: on remote host with no key yet, open the API settings modal
     if (!isLocalhost && !customGeminiKey) {
