@@ -1,6 +1,6 @@
 # 🤖 Hasu — AI Chat Assistant
 
-> A premium, full-screen AI chat assistant powered by **Google Gemini**, built with a secure Node.js backend, a beautiful dark glassmorphic UI, and 12-day persistent chat history.
+> A premium, full-screen AI chat assistant powered by **Google Gemini**, built with a Node.js backend, a beautiful dark glassmorphic UI, and 12-day persistent chat history.
 
 ![Hasu Chat Interface](https://img.shields.io/badge/Status-Live-brightgreen?style=flat-square) ![Node.js](https://img.shields.io/badge/Node.js-v18%2B-339933?style=flat-square&logo=node.js&logoColor=white) ![Gemini](https://img.shields.io/badge/Powered%20by-Gemini%202.5%20Flash-4285F4?style=flat-square&logo=google&logoColor=white) ![License](https://img.shields.io/badge/License-ISC-blue?style=flat-square)
 
@@ -23,7 +23,7 @@ Whether you want to ask questions, get explanations, write code, or just have a 
 | 💾 **12-Day Chat History** | All conversations are saved locally and auto-expire after 12 days |
 | 📂 **Sidebar History** | Browse past chats grouped by Today, Last 7 Days, and Older |
 | 🗑️ **Delete Chats** | Hover over any saved chat to delete it individually |
-| 🔒 **Secure HTTPS Server** | Runs on localhost with a self-signed SSL certificate |
+| 🌐 **Local HTTP Server** | Runs on localhost — no SSL setup needed, opens instantly in any browser |
 | 🛡️ **API Key Protection** | The Gemini API key is stored in a backend `.env` file — never exposed to the browser |
 | ✨ **Quick-Start Chips** | Tap a suggestion chip to instantly start a conversation |
 | 🖥️ **Markdown Rendering** | Renders **bold text**, `inline code`, and full code blocks from the AI |
@@ -48,9 +48,7 @@ Whether you want to ask questions, get explanations, write code, or just have a 
 | Technology | Purpose |
 |---|---|
 | **Node.js** | Runtime environment for the backend server |
-| **HTTPS (built-in)** | Secure local server with SSL encryption |
-| **HTTP (built-in)** | HTTP → HTTPS redirect server |
-| **`selfsigned` npm package** | Auto-generates local SSL certificates for `hasu.local` |
+| **HTTP (built-in)** | Lightweight local server — no SSL or certificate setup required |
 | **`.env` file** | Stores the Gemini API key securely, away from the browser |
 | **`/api/chat` proxy route** | Backend endpoint that forwards requests to Google Gemini API |
 
@@ -76,12 +74,11 @@ Hasu/
 ├── index.html          # Main UI — sidebar, chat area, input bar
 ├── styles.css          # All styling — dark theme, glassmorphism, animations
 ├── script.js           # Frontend logic — AI calls, history, rendering
-├── server.js           # Node.js backend — HTTPS server, /api/chat proxy
+├── server.js           # Node.js backend — HTTP server, /api/chat proxy
 ├── package.json        # Project metadata and dependencies
 ├── .env                # 🔒 Your API key (NOT committed to Git)
-├── .gitignore          # Excludes node_modules/, certs/, .env
-├── launch.bat          # One-click launcher for Windows
-└── certs/              # Auto-generated SSL certificates (NOT committed)
+├── .gitignore          # Excludes node_modules/ and .env
+└── launch.bat          # One-click launcher for Windows
 ```
 
 ---
@@ -121,20 +118,17 @@ node server.js
 
 **5. Open in Browser**
 
-Navigate to: **`https://127.0.0.1:8443`**
+Navigate to: **`http://127.0.0.1:3000`**
 
-> ⚠️ Your browser may show a "Not Secure" warning on first launch because the SSL certificate is self-signed. You can permanently trust it by running:
-> ```bash
-> certutil -addstore -user root .\certs\cert.pem
-> ```
+> ✅ No SSL warnings or certificate setup needed — it just works!
 
 ---
 
 ## 🔐 Security
 
 - Your **Gemini API key is never exposed** to the browser or frontend code. It lives exclusively in your `.env` file and is read only by the Node.js backend.
-- All traffic between your browser and the local server is encrypted over **HTTPS**.
-- The `.env` file and `certs/` directory are excluded from Git via `.gitignore`.
+- The server runs locally on `127.0.0.1` — it is not accessible from outside your machine.
+- The `.env` file is excluded from Git via `.gitignore`.
 
 ---
 
