@@ -120,9 +120,20 @@ node server.js
 
 **5. Open in Browser**
 
-Navigate to: **`http://127.0.0.1:3000`**
+On the **same computer**: **`http://127.0.0.1:3000`**
+
+On your **phone or another device** (same WiFi): the server will print a Network URL like:
+```
+✅ Hasu Chat is running!
+   ➜  Local:   http://127.0.0.1:3000
+   ➜  Network: http://192.168.x.x:3000  ← open this on your phone
+```
+Just open that Network URL in your phone's browser — no setup needed!
 
 > ✅ No SSL warnings or certificate setup needed — it just works!
+
+> 💡 **Easiest option for phones:** Use the live GitHub Pages link instead — no server required:
+> **https://utkarshkumarnigam-lab.github.io/Hasu/**
 
 ---
 

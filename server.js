@@ -1,6 +1,7 @@
 const http  = require('http');
 const fs    = require('fs');
 const path  = require('path');
+const os    = require('os');
 
 // Load .env
 if (fs.existsSync(path.join(__dirname, '.env'))) {
@@ -12,6 +13,16 @@ if (fs.existsSync(path.join(__dirname, '.env'))) {
 }
 
 const PORT = process.env.PORT || 3000;
+
+/** Get the local network IP so phones on the same WiFi can connect */
+function getLanIp() {
+    for (const iface of Object.values(os.networkInterfaces())) {
+        for (const info of iface) {
+            if (info.family === 'IPv4' && !info.internal) return info.address;
+        }
+    }
+    return null;
+}
 
 const MIME = {
     '.html': 'text/html; charset=utf-8',
@@ -61,7 +72,12 @@ function serve(req, res) {
     fs.createReadStream(filePath).pipe(res);
 }
 
-http.createServer(serve).listen(PORT, '127.0.0.1', () => {
+http.createServer(serve).listen(PORT, '0.0.0.0', () => {
+    const lan = getLanIp();
     console.log('\n✅ Hasu Chat is running!');
-    console.log(`   ➜  http://127.0.0.1:${PORT}\n`);
+    console.log(`   ➜  Local:   http://127.0.0.1:${PORT}`);
+    if (lan) {
+        console.log(`   ➜  Network: http://${lan}:${PORT}  ← open this on your phone`);
+    }
+    console.log();
 });
