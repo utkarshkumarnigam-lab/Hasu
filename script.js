@@ -39,12 +39,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ─── API Settings State & Handlers ────────────────────────────────────────
-    const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    const isLocalhost   = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    const isGithubPages = window.location.hostname.includes('github.io');
     let customGeminiKey = localStorage.getItem('hasu_custom_api_key') || '';
-    // On remote hosts, always use direct API with user-provided key
+    // Use backend proxy by default everywhere EXCEPT GitHub Pages (which has no backend)
     let useCustomKey = localStorage.getItem('hasu_use_custom_key') !== null
         ? localStorage.getItem('hasu_use_custom_key') === 'true'
-        : !isLocalhost;
+        : isGithubPages;
 
     function initApiSettings() {
         customApiKeyInput.value = customGeminiKey;
@@ -54,15 +55,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updateStatusIndicators() {
         if (useCustomKey && customGeminiKey) {
-            statusDot.className = 'status-dot';
             statusDot.style.background = '#10b981';
             statusDot.style.boxShadow = '0 0 8px rgba(16,185,129,0.6)';
             statusText.textContent = 'API Key Set';
             modelStatusDot.style.background = '#10b981';
             modelStatusDot.style.boxShadow = '0 0 8px rgba(16,185,129,0.6)';
             modelBadgeText.textContent = 'Gemini 2.5 Flash';
-        } else if (!isLocalhost) {
-            statusDot.className = 'status-dot';
+        } else if (isGithubPages && !customGeminiKey) {
             statusDot.style.background = '#f59e0b';
             statusDot.style.boxShadow = '0 0 8px rgba(245,158,11,0.6)';
             statusText.textContent = 'Key Needed';
@@ -70,10 +69,9 @@ document.addEventListener('DOMContentLoaded', () => {
             modelStatusDot.style.boxShadow = '0 0 8px rgba(245,158,11,0.6)';
             modelBadgeText.textContent = 'Set API Key';
         } else {
-            statusDot.className = 'status-dot';
             statusDot.style.background = '#10b981';
             statusDot.style.boxShadow = '0 0 8px rgba(16,185,129,0.6)';
-            statusText.textContent = 'Local Node';
+            statusText.textContent = isLocalhost ? 'Local Node' : 'Online';
             modelStatusDot.style.background = '#10b981';
             modelStatusDot.style.boxShadow = '0 0 8px rgba(16,185,129,0.6)';
             modelBadgeText.textContent = 'Gemini 2.5 Flash';
@@ -448,8 +446,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Collapse sidebar by default on mobile
     if (isMobileView()) sidebar.classList.add('collapsed');
 
-    // Auto-prompt: on remote host with no key yet, open the API settings modal
-    if (!isLocalhost && !customGeminiKey) {
+    // Auto-prompt: on GitHub Pages with no key yet, open the API settings modal
+    if (isGithubPages && !customGeminiKey) {
         setTimeout(() => openApiModal(), 1200);
     }
 });
