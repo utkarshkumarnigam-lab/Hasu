@@ -144,6 +144,17 @@ document.addEventListener('DOMContentLoaded', () => {
         renderSidebarHistory();
     }
 
+    /** On page load, restore the most recent chat (or start fresh if none) */
+    function restoreOrStartChat() {
+        const chats = loadAllChats();
+        const sorted = Object.values(chats).sort((a, b) => b.updatedAt - a.updatedAt);
+        if (sorted.length > 0) {
+            loadChat(sorted[0].id);
+        } else {
+            startNewChat();
+        }
+    }
+
     /** Load a chat by id */
     function loadChat(id) {
         const chats = loadAllChats();
@@ -411,9 +422,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ─── Boot ─────────────────────────────────────────────────────────────────
 
-    pruneOldChats();      // clean up expired chats on load
-    startNewChat();       // start fresh session (sidebar will show saved history)
-    initApiSettings();    // initialize API key and checkbox from storage
+    pruneOldChats();        // clean up expired chats on load
+    restoreOrStartChat();   // restore last chat or start fresh
+    initApiSettings();      // initialize API key and checkbox from storage
 
     // Auto-prompt: on remote host with no key yet, open the API settings modal
     if (!isLocalhost && !customGeminiKey) {
