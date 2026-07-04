@@ -2,7 +2,8 @@
 
 > A premium, full-screen AI chat assistant powered by **Google Gemini**, built with a Node.js backend, a beautiful dark glassmorphic UI, and 12-day persistent chat history.
 
-**Live Demo:** https://utkarshkumarnigam-lab.github.io/Hasu/
+**Live Demo (No Setup Needed):** [https://hasu-production.up.railway.app](https://hasu-production.up.railway.app)
+**Alternative Demo (Requires API Key):** [https://utkarshkumarnigam-lab.github.io/Hasu/](https://utkarshkumarnigam-lab.github.io/Hasu/)
 
 ![Hasu Chat Interface](https://img.shields.io/badge/Status-Live-brightgreen?style=flat-square) ![Node.js](https://img.shields.io/badge/Node.js-v18%2B-339933?style=flat-square&logo=node.js&logoColor=white) ![Gemini](https://img.shields.io/badge/Powered%20by-Gemini%202.5%20Flash-4285F4?style=flat-square&logo=google&logoColor=white) ![License](https://img.shields.io/badge/License-ISC-blue?style=flat-square)
 
