@@ -144,4 +144,4 @@ This project is licensed under the **ISC License**.
 
 ---
 
-<p align="center">Built with ❤️ using Node.js, Vanilla JS, and Google Gemini</p>
+<p align="center">Built using Node.js, Vanilla JS, and Google Gemini!!</p>
